@@ -10,7 +10,7 @@ import UIKit
 
 class TodoListViewController: UITableViewController {
 
-    let itemArray = ["Jon snow","mother of dragon","King of the north","Kalsei","the night walker"]
+    let itemArray = ["Jon snow","mother of dragon","King of the north","Kalsei","the night walker", "dwarf"]
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
