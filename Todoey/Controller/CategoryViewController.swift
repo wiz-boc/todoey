@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import ChameleonFramework
 
 class CategoryViewController: SwipeTableViewController {
 
@@ -20,6 +21,7 @@ class CategoryViewController: SwipeTableViewController {
         super.viewDidLoad()
         loadCategories()
         tableView.rowHeight = 60.0
+        tableView.separatorStyle = .none
     }
 
     //MARK: - TableView Datasource Methods
@@ -32,6 +34,9 @@ class CategoryViewController: SwipeTableViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         let category = categoryArray[indexPath.row]
         cell.textLabel?.text = category.name
+
+        cell.backgroundColor = UIColor(hexString: category.color ?? "#FF11CC" )
+        //UIColor.randomFlat()
         return cell
     }
     
@@ -45,6 +50,7 @@ class CategoryViewController: SwipeTableViewController {
             
         let newCategory = Category(context: self.context)
             newCategory.name = textField.text!
+            newCategory.color = UIColor.randomFlat().hexValue()
             self.categoryArray.append(newCategory)
             self.saveCategory()
             //self.defaults.set(self.itemArray, forKey: "TodoListArray")

@@ -8,6 +8,7 @@
 
 import UIKit
 import CoreData
+import ChameleonFramework
 
 class TodoListViewController: SwipeTableViewController {
 
@@ -24,6 +25,7 @@ class TodoListViewController: SwipeTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.rowHeight = 60.0
+        tableView.separatorStyle = .none
        // print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist"))
 //        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
 //            itemArray = items
@@ -37,6 +39,21 @@ class TodoListViewController: SwipeTableViewController {
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
         let item = itemArray[indexPath.row]
         cell.textLabel?.text = item.title
+        
+        //if let color = cell.textLabel?.textColor {
+        //cell.textLabel?.textColor = FlatWhite().lighten(byPercentage: CGFloat(indexPath.row) /
+        //cell.textLabel?.textColor = color.lighten(byPercentage: CGFloat(indexPath.row) /             CGFloat(itemArray.count))
+            
+        //}
+        
+        //UIColor(hexString: category.color ?? "#FF11CC" )
+        let categoryColor = item.parentCategory?.color
+        if let color  = UIColor(hexString: categoryColor ?? "#FF11CC")?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(itemArray.count)){
+            cell.backgroundColor = color
+            cell.textLabel?.textColor = ContrastColorOf(color, returnFlat: true)
+        }
+        
+        
         cell.accessoryType = item.isDone ? .checkmark : .none
         return cell
     }
