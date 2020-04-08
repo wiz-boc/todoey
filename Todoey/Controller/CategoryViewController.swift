@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class CategoryViewController: UITableViewController {
+class CategoryViewController: SwipeTableViewController {
 
     var categoryArray = [Category]()
     
@@ -19,6 +19,7 @@ class CategoryViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         loadCategories()
+        tableView.rowHeight = 60.0
     }
 
     //MARK: - TableView Datasource Methods
@@ -27,8 +28,8 @@ class CategoryViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath)
         
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         let category = categoryArray[indexPath.row]
         cell.textLabel?.text = category.name
         return cell
@@ -74,7 +75,7 @@ class CategoryViewController: UITableViewController {
     
     //MARK: - Data Manipulation methods
     
-    func saveCategory(){
+    func saveCategory(with tableRoload: Bool = true){
         
         do {
             try context.save()
@@ -82,7 +83,11 @@ class CategoryViewController: UITableViewController {
             print("error saving context \(error.localizedDescription)")
         }
         
-        self.tableView.reloadData()
+        if tableRoload {
+           self.tableView.reloadData()
+        }
+        
+        
     }
     
     func loadCategories(){
@@ -96,5 +101,14 @@ class CategoryViewController: UITableViewController {
             tableView.reloadData()
         }
     
+    //MARK: - Delete data from Swipe
+    override func updateModel(at indexPath: IndexPath) {
+            
+        self.context.delete(self.categoryArray[indexPath.row])
+        self.categoryArray.remove(at: indexPath.row)
+        self.saveCategory(with: false)
+    }
+    
 
 }
+

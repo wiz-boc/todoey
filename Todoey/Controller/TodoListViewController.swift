@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class TodoListViewController: UITableViewController {
+class TodoListViewController: SwipeTableViewController {
 
     var itemArray = [Item]()
     var selectedCategory: Category? {
@@ -23,7 +23,7 @@ class TodoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
- 
+        tableView.rowHeight = 60.0
        // print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist"))
 //        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
 //            itemArray = items
@@ -33,12 +33,11 @@ class TodoListViewController: UITableViewController {
 
     //MARK: - Tableview Datasource methods
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         let item = itemArray[indexPath.row]
         cell.textLabel?.text = item.title
-    
         cell.accessoryType = item.isDone ? .checkmark : .none
-        
         return cell
     }
     
@@ -89,15 +88,16 @@ class TodoListViewController: UITableViewController {
         
     }
     
-    func saveitems(){
+    func saveitems(with tableRoload: Bool = true){
         
         do {
             try context.save()
         }catch{
             print("error saving context \(error.localizedDescription)")
         }
-        
-        self.tableView.reloadData()
+        if tableRoload {
+            self.tableView.reloadData()
+        }
     }
     func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate: NSPredicate? = nil){
         
@@ -126,6 +126,13 @@ class TodoListViewController: UITableViewController {
 //                print("There was an error: \(error.localizedDescription)")
 //            }
 //        }
+    }
+    
+    override func updateModel(at indexPath: IndexPath) {
+        self.context.delete(self.itemArray[indexPath.row])
+        self.itemArray.remove(at: indexPath.row)
+        
+        self.saveitems(with: false)
     }
     
 
