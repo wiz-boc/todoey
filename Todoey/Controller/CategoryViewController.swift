@@ -22,6 +22,13 @@ class CategoryViewController: SwipeTableViewController {
         loadCategories()
         tableView.rowHeight = 60.0
         tableView.separatorStyle = .none
+        
+        
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        let navColor = UINavigationBarAppearance()
+        navColor.backgroundColor = #colorLiteral(red: 0, green: 0.7490196078, blue: 1, alpha: 1) //self.navigationController?.navigationBar.backgroundColor
+        self.navigationController?.navigationBar.scrollEdgeAppearance = navColor
     }
 
     //MARK: - TableView Datasource Methods
@@ -32,9 +39,15 @@ class CategoryViewController: SwipeTableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = super.tableView(tableView, cellForRowAt: indexPath)
-        let category = categoryArray[indexPath.row]
+         let category = categoryArray[indexPath.row]
         cell.textLabel?.text = category.name
-
+        
+       
+        
+        if let catColor = UIColor(hexString: category.color ?? "#00FF00") {
+            cell.textLabel?.textColor = ContrastColorOf(catColor, returnFlat: true)
+        }
+        
         cell.backgroundColor = UIColor(hexString: category.color ?? "#FF11CC" )
         //UIColor.randomFlat()
         return cell

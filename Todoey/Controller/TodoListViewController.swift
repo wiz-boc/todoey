@@ -12,6 +12,8 @@ import ChameleonFramework
 
 class TodoListViewController: SwipeTableViewController {
 
+    
+    @IBOutlet weak var searchBar: UISearchBar!
     var itemArray = [Item]()
     var selectedCategory: Category? {
         didSet{
@@ -26,11 +28,34 @@ class TodoListViewController: SwipeTableViewController {
         super.viewDidLoad()
         tableView.rowHeight = 60.0
         tableView.separatorStyle = .none
+        
+        
+        
        // print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist"))
 //        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
 //            itemArray = items
 //        }
         
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        if let colorHec = selectedCategory?.color {
+            
+            title = selectedCategory!.name
+            guard let navBar = navigationController?.navigationBar else {
+                fatalError("navigation controller does not exist")
+            }
+                        
+            if let navBarColor = UIColor(hexString: colorHec) {
+                let navColor = UINavigationBarAppearance()
+                navColor.backgroundColor = navBarColor
+
+                navBar.scrollEdgeAppearance = navColor
+                navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
+//                navBar.largeTitleTextAttributes [NSExtensionItemAttributedStringKey.foregroundColor : ContrastColorOf(navBarColor, returnFlat: true)]
+                searchBar.barTintColor = navBarColor
+            }
+            
+        }
     }
 
     //MARK: - Tableview Datasource methods
@@ -150,6 +175,10 @@ class TodoListViewController: SwipeTableViewController {
         self.itemArray.remove(at: indexPath.row)
         
         self.saveitems(with: false)
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        return .lightContent
     }
     
 
